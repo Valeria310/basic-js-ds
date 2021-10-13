@@ -34,7 +34,7 @@ module.exports = class BinarySearchTree {
 
   has(data) {
     function findNode(node, data) {
-      if(node===null) {
+      if(!node) {
         return false
       }
       if(node.data===data) {
@@ -66,12 +66,47 @@ module.exports = class BinarySearchTree {
     return findNode(this.node, data);
   }
 
-  remove(/* data */) {
-    throw new NotImplementedError('Not implemented');
-    // remove line with error and write your code here
+  remove(data) {
+    function removeNode(node, data) {
+      if(!node) {
+        return null
+      }
+      if(data<node.data) {
+        node.left = removeNode(node.left, data);
+        return node
+      } else if(data>node.data) {
+        node.right = removeNode(node.right, data);
+        return node
+      } else {
+        if (!node.left && !node.right) {
+          return null;
+        }
+        if(!node.left) {
+          node = node.right;
+          return node
+        }
+        if(!node.right) {
+          node = node.left;
+          return node
+        }
+        let right = node.right;
+        while (right.left) {
+          right=right.left
+        }
+
+        node.data = right.data;
+        node.right = removeNode(node.right, right.data);
+
+        return node;
+      }
+    }
+    return removeNode(this.node, data)
   }
 
-   min() {
+  min() {
+    if(!this.node) {
+      return null
+    }
     function min(node) {
       if(node.left) {
         return min(node.left)
@@ -82,6 +117,9 @@ module.exports = class BinarySearchTree {
   }
 
   max() {
+    if(!this.node) {
+      return null
+    }
     function max(node) {
       if(node.right) {
         return max(node.right)
